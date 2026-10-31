@@ -1,0 +1,298 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Сто тысяч в день</title>
+<meta name="description" content="Живой счётчик смертей от причин, связанных со старением, и короткое объяснение, почему эту тему стоит изучать.">
+<meta property="og:title" content="Сто тысяч в день">
+<meta property="og:description" content="Каждую секунду в мире умирает больше одного человека от причин, связанных со старением.">
+<style>
+:root{--bg:#edf4ee;--ink:#14281d;--muted:#4a6354;--lit:#23864a;--dim:#c5d6ca;--rule:#cfdcd2;--glow:none;color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1f18;--ink:#e8f3ec;--muted:#9bb8a7;--lit:#5fd08a;--dim:#214133;--rule:#24402f;--glow:0 0 10px rgba(95,208,138,.5);color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0f1f18;--ink:#e8f3ec;--muted:#9bb8a7;--lit:#5fd08a;--dim:#214133;--rule:#24402f;--glow:0 0 10px rgba(95,208,138,.5);color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:1.0625rem/1.65 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+main{max-width:46rem;margin:0 auto;padding:2.5rem 1.25rem 4rem}
+h1,h2,.n,dd{font-family:"Iowan Old Style",Charter,"Palatino Linotype",Georgia,serif;font-weight:400}
+h1{font-size:1.2rem;line-height:1.4;margin:0 0 .5rem;color:var(--muted)}
+.n{font-size:clamp(2.6rem,13vw,6.5rem);line-height:1.05;margin:0;white-space:nowrap;max-width:none}
+.d{display:inline-block;width:.64em;text-align:center}
+.g{display:inline-block;width:.28em}
+.lead{font-size:1.2rem;margin:.75rem 0 0;max-width:34rem}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(9.5rem,1fr));gap:1.25rem 2rem;margin:2.25rem 0 0}
+.stats div{border-top:1px solid var(--rule);padding-top:.75rem}
+dt{font-size:.875rem;line-height:1.4;color:var(--muted)}
+dd{margin:.2rem 0 0;font-size:1.9rem;line-height:1.2}
+.dots{display:grid;grid-template-columns:repeat(20,1fr);gap:clamp(3px,1.3vw,9px);margin:2.5rem 0 .75rem}
+.dots i{aspect-ratio:1;border-radius:50%;background:var(--lit);box-shadow:var(--glow);transition:background .9s,box-shadow .9s}
+.dots i.off{background:var(--dim);box-shadow:none}
+.cap{font-size:.875rem;color:var(--muted);margin:0;max-width:34rem}
+h2{font-size:1.65rem;line-height:1.25;margin:3.5rem 0 1rem}
+p,ul{max-width:38rem}
+ul{padding-left:1.2rem}
+li{margin-bottom:.5rem}
+.note{margin-top:3.5rem;padding-top:1.25rem;border-top:1px solid var(--rule);font-size:.875rem;color:var(--muted)}
+@media (prefers-reduced-motion:reduce){.dots i{transition:none}}
+
+.top{display:flex;justify-content:space-between;align-items:flex-start;margin:0 0 1rem}
+button{font:inherit;color:var(--ink);background:transparent;border:1px solid var(--rule);border-radius:999px;padding:.3rem .9rem;cursor:pointer}
+button:focus-visible{outline:2px solid var(--lit);outline-offset:2px}
+.pick{position:fixed;inset:0;z-index:5;display:grid;place-items:center;overflow:auto;background:var(--bg);padding:calc(env(safe-area-inset-top,0px) + 1.25rem) 1.25rem calc(env(safe-area-inset-bottom,0px) + 1.25rem)}
+.pick[hidden]{display:none}
+.pick div{width:min(22rem,100%)}
+.pick p{font:1.5rem/1.4 "Iowan Old Style",Charter,Georgia,serif;margin:0 0 1.25rem}
+.pick button{display:block;width:100%;margin:.6rem 0;padding:.85rem 1.1rem;border-radius:.75rem;font-size:1.15rem;text-align:left}
+.pick button:hover{border-color:var(--lit)}
+.g{text-align:center}
+.big{font:1.3rem/1.55 "Iowan Old Style",Charter,Georgia,serif;max-width:34rem}
+.plane{margin:1.5rem 0 .25rem;border-top:1px solid var(--rule);padding-top:.75rem;max-width:38rem}
+.plane span{display:block;font-size:.95rem;color:var(--muted)}
+.plane b{display:block;font:400 clamp(2.2rem,11vw,3.5rem)/1.15 "Iowan Old Style",Charter,Georgia,serif}
+
+.skull{width:clamp(7.5rem,32vw,12rem);aspect-ratio:1;margin:-.5rem 0 0 -.75rem;cursor:grab;touch-action:pan-y;user-select:none}
+.skull:active{cursor:grabbing}
+a{color:inherit;text-decoration:underline;text-decoration-color:var(--lit);text-decoration-thickness:2px;text-underline-offset:.2em}
+a:focus-visible{outline:2px solid var(--lit);outline-offset:2px}
+</style>
+</head>
+<body>
+<div class="pick" id="pick" role="dialog" aria-modal="true" aria-labelledby="pt">
+<div>
+<p id="pt">Choose your language<br>Выберите язык<br>Оберіть мову</p>
+<button data-l="en">English</button>
+<button data-l="ru">Русский</button>
+<button data-l="uk">Українська</button>
+</div>
+</div>
+<main id="main">
+<div class="top"><div class="skull" id="skull" aria-hidden="true"></div><button id="sw" aria-haspopup="dialog"></button></div>
+<h1 data-i="lab"></h1>
+<p class="n" id="year" role="img"></p>
+<p class="lead" data-i="lead"></p>
+<dl class="stats">
+<div><dt data-i="s1"></dt><dd id="day"></dd></div>
+<div><dt data-i="s2"></dt><dd id="open"></dd></div>
+<div><dt data-i="s3"></dt><dd data-i="rate"></dd></div>
+</dl>
+<div class="dots" id="dots" aria-hidden="true"></div>
+<p class="cap" data-i="cap"></p>
+<h2 data-i="ah"></h2>
+<p class="big" data-i="ap"></p>
+<h2 data-i="ph"></h2>
+<p data-i="pp"></p>
+<div class="plane"><span data-i="pn"></span><b id="pl"></b></div>
+<h2 data-i="ch"></h2>
+<p data-i="c1"></p>
+<p data-i="tr"></p>
+<p data-i="c2"></p>
+<h2 data-i="fh"></h2>
+<p data-i="f1"></p>
+<p data-i="f2"></p>
+<p data-i="f3"></p>
+<h2 data-i="dh"></h2>
+<ul><li data-i="d1"></li><li data-i="d2"></li><li data-i="d3"></li></ul>
+<p class="note" data-i="note"></p>
+</main>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+const T={
+ru:{t:'Сто тысяч в день',al:'Живой счётчик, растёт на 1,16 в секунду',
+lab:'С 1 января {y} года от причин, связанных со старением, умерло примерно',
+lead:'Это около 100 000 человек в сутки: больше одного человека каждую секунду.',
+s1:'Сегодня',s2:'С момента, как вы открыли страницу',s3:'В секунду',rate:'≈ 1,16',
+cap:'Каждая точка — один человек. Сто точек гаснут за полторы минуты, потом начинается следующая сотня.',
+ah:'Это касается каждого',
+ap:'За этими цифрами нет «кого-то далёкого». Это чьи-то родители, бабушки и дедушки, друзья, соседи. Рано или поздно возраст коснётся каждого, кого вы любите. И вас.',
+ph:'Представьте самолёты',
+pp:'Представьте, что каждый день разбивается около 550 пассажирских Boeing, по одному каждые две-три минуты, и никто на борту не выживает. Мир бы остановился. Только об этом и говорили бы. Но то же самое происходит каждый день, просто тихо: по одному человеку, дома и в больницах.',
+pn:'Столько самолётов набралось бы с начала года:',
+ch:'Впервые у нас есть шанс',
+c1:'Раньше старение считали неизбежной судьбой. Сегодня науке удаётся замедлять его у животных. Рапамицин продлил жизнь мышам (<a href="https://doi.org/10.1038/nature08221" target="_blank" rel="noopener">Harrison и др., Nature, 2009</a>). Удаление «стареющих» клеток улучшило физическую форму старых мышей и продлило им жизнь (<a href="https://doi.org/10.1038/s41591-018-0092-9" target="_blank" rel="noopener">Xu и др., Nature Medicine, 2018</a>). Частичное перепрограммирование клеток вернуло зрение мышам с глаукомой и старым мышам (<a href="https://doi.org/10.1038/s41586-020-2975-4" target="_blank" rel="noopener">Lu и др., Nature, 2020</a>).',
+c2:'Это не гарантия, но впервые за всю историю у людей появился реальный шанс справиться со старением. Сколько людей успеет до этого дожить, зависит от нас: от внимания, денег и тех, кто об этом знает. Чем быстрее идёт работа, тем больше людей дождётся.',
+tr:'На людях это только начинают проверять. Первое такое испытание — препарат ER-100 компании Life Biosciences, основанный на том же перепрограммировании: в июне 2026 года его ввели первому участнику (<a href="https://www.lifebiosciences.com/life-biosciences-announces-first-patient-dosed-in-phase-1-trial-of-er-100-for-optic-neuropathies/" target="_blank" rel="noopener">сообщение компании</a>, <a href="https://clinicaltrials.gov/study/NCT07290244" target="_blank" rel="noopener">реестр NCT07290244</a>). Пока это проверка безопасности при болезнях зрительного нерва, например глаукоме, а не лекарство от старения. Результатов ещё нет, и неизвестно, повторится ли у людей то, что получилось у мышей.',
+fh:'Старение официально не болезнь',
+f1:'Старение официально не считается болезнью: ВОЗ в классификации МКБ-11 <a href="https://www.who.int/standards/classifications/frequently-asked-questions/old-age" target="_blank" rel="noopener">не называет старость болезнью</a>, а FDA не принимает старение как показание для лекарства. Поэтому препарат, замедляющий само старение, пока нельзя зарегистрировать как таковой. Его приходится проверять отдельно на каждой болезни, а это годы и огромные деньги.',
+f2:'Сторонники перемен не предлагают объявить старение болезнью. Они предлагают, чтобы ВОЗ, FDA и другие регуляторы закрепили новую формулировку: старение — не болезнь, но один из главных факторов риска большинства болезней и в итоге смерти, поэтому воздействие на него — законная цель медицины. Тогда у исследователей появится понятный путь, чтобы проверять и регистрировать такие препараты.',
+f3:'У этой идеи есть и критики: часть учёных считает, что нормальный процесс не стоит называть болезнью, и опасается усиления дискриминации по возрасту (<a href="https://www.technologyreview.com/2022/10/19/1061070/is-old-age-a-disease/" target="_blank" rel="noopener">обзор спора</a>). Обсуждать это стоит открыто.',
+dh:'Что можно сделать сегодня',
+d1:'Отправьте эту страницу одному человеку и расскажите, почему это важно для вас.',
+d2:'Прочитайте одну статью по запросу «биология старения» или «геронаука».',
+d3:'Говорите об этом спокойно и без громких обещаний: честность убеждает лучше.',
+note:'Как посчитано: около 150 000 смертей в сутки, из них примерно две трети связаны с возрастом, итого ≈ 100 000 в сутки, или 1,16 в секунду. Самолёты: 100 000 ÷ 180 пассажиров (полный Boeing 737) ≈ 555 в сутки. Это грубые оценки, а не официальная статистика: чёткой границы между «смертью от старения» и другими причинами нет. Точные данные ищите у ВОЗ, ООН и в проекте Global Burden of Disease. Счётчик считается в вашем браузере и ничего не отправляет.'},
+uk:{t:'Сто тисяч на добу',al:'Живий лічильник, зростає на 1,16 за секунду',
+lab:'З 1 січня {y} року від причин, пов’язаних зі старінням, померло приблизно',
+lead:'Це близько 100 000 людей на добу: більше однієї людини щосекунди.',
+s1:'Сьогодні',s2:'Відколи ви відкрили сторінку',s3:'За секунду',rate:'≈ 1,16',
+cap:'Кожна крапка — одна людина. Сто крапок згасають за півтори хвилини, потім починається наступна сотня.',
+ah:'Це стосується кожного',
+ap:'За цими цифрами немає «когось далекого». Це чиїсь батьки, бабусі й дідусі, друзі, сусіди. Рано чи пізно вік торкнеться кожного, кого ви любите. І вас.',
+ph:'Уявіть літаки',
+pp:'Уявіть, що щодня розбивається близько 550 пасажирських Boeing, по одному кожні дві-три хвилини, і на борту ніхто не виживає. Світ би зупинився. Говорили б тільки про це. Але те саме відбувається щодня, просто тихо: по одній людині, вдома й у лікарнях.',
+pn:'Стільки літаків набралося б від початку року:',
+ch:'Уперше в нас є шанс',
+c1:'Раніше старіння вважали неминучою долею. Сьогодні науці вдається сповільнювати його в тварин. Рапаміцин подовжив життя мишам (<a href="https://doi.org/10.1038/nature08221" target="_blank" rel="noopener">Harrison та ін., Nature, 2009</a>). Видалення «старіючих» клітин покращило фізичну форму старих мишей і подовжило їм життя (<a href="https://doi.org/10.1038/s41591-018-0092-9" target="_blank" rel="noopener">Xu та ін., Nature Medicine, 2018</a>). Часткове перепрограмування клітин повернуло зір мишам із глаукомою та старим мишам (<a href="https://doi.org/10.1038/s41586-020-2975-4" target="_blank" rel="noopener">Lu та ін., Nature, 2020</a>).',
+c2:'Це не гарантія, але вперше за всю історію в людей з’явився реальний шанс упоратися зі старінням. Скільки людей встигне до цього дожить, залежить від нас: від уваги, коштів і тих, хто про це знає. Чим швидше йде робота, тим більше людей дочекається.',
+tr:'На людях це лише починають перевіряти. Перше таке випробування — препарат ER-100 компанії Life Biosciences, що ґрунтується на тому самому перепрограмуванні: у червні 2026 року його ввели першому учаснику (<a href="https://www.lifebiosciences.com/life-biosciences-announces-first-patient-dosed-in-phase-1-trial-of-er-100-for-optic-neuropathies/" target="_blank" rel="noopener">повідомлення компанії</a>, <a href="https://clinicaltrials.gov/study/NCT07290244" target="_blank" rel="noopener">реєстр NCT07290244</a>). Це поки що перевірка безпеки за хвороб зорового нерва, наприклад глаукоми, а не ліки від старіння. Результатів ще немає, і невідомо, чи повториться у людей те, що вийшло в мишей.',
+fh:'Старіння офіційно не хвороба',
+f1:'Старіння офіційно не вважається хворобою: ВООЗ у класифікації МКХ-11 <a href="https://www.who.int/standards/classifications/frequently-asked-questions/old-age" target="_blank" rel="noopener">не називає старість хворобою</a>, а FDA не приймає старіння як показання для ліків. Тому препарат, що сповільнює саме старіння, поки не можна зареєструвати як такий. Його доводиться перевіряти окремо на кожній хворобі, а це роки й величезні гроші.',
+f2:'Прихильники змін не пропонують оголосити старіння хворобою. Вони пропонують, щоб ВООЗ, FDA та інші регулятори закріпили нове формулювання: старіння — не хвороба, але один із головних чинників ризику більшості хвороб і зрештою смерті, тому вплив на нього — законна мета медицини. Тоді в дослідників з’явиться зрозумілий шлях, щоб перевіряти й реєструвати такі препарати.',
+f3:'У цієї ідеї є й критики: частина вчених вважає, що нормальний процес не варто називати хворобою, і боїться посилення дискримінації за віком (<a href="https://www.technologyreview.com/2022/10/19/1061070/is-old-age-a-disease/" target="_blank" rel="noopener">огляд суперечки</a>). Обговорювати це варто відкрито.',
+dh:'Що можна зробити сьогодні',
+d1:'Надішліть цю сторінку одній людині й розкажіть, чому це важливо для вас.',
+d2:'Прочитайте одну статтю за запитом «біологія старіння» або «геронтологія».',
+d3:'Говоріть про це спокійно й без гучних обіцянок: чесність переконує краще.',
+note:'Як пораховано: близько 150 000 смертей на добу, з них приблизно дві третини пов’язані з віком, разом ≈ 100 000 на добу, або 1,16 за секунду. Літаки: 100 000 ÷ 180 пасажирів (повний Boeing 737) ≈ 555 на добу. Це грубі оцінки, а не офіційна статистика: чіткої межі між «смертю від старіння» й іншими причинами немає. Точні дані шукайте у ВООЗ, ООН і проєкті Global Burden of Disease. Лічильник працює у вашому браузері й нічого не надсилає.'},
+en:{t:'A hundred thousand a day',al:'Live counter, growing by 1.16 per second',
+lab:'Since January 1, {y}, roughly this many people have died of causes linked to aging:',
+lead:'That is about 100,000 people a day: more than one person every second.',
+s1:'Today',s2:'Since you opened this page',s3:'Per second',rate:'≈ 1.16',
+cap:'Each dot is one person. A hundred dots go out in a minute and a half, then the next hundred begins.',
+ah:'This concerns everyone',
+ap:'Behind these numbers there is no distant “somebody.” These are someone’s parents, grandparents, friends, neighbors. Sooner or later, age reaches everyone you love. And you.',
+ph:'Imagine the planes',
+pp:'Imagine that about 550 passenger Boeings crashed every day, one every two to three minutes, with no survivors. The world would stop. Nothing else would be discussed. Yet the same thing happens every day, only quietly: one person at a time, at home and in hospitals.',
+pn:'That is how many planes it would be since the start of the year:',
+ch:'For the first time, we have a chance',
+c1:'Aging used to be seen as unavoidable fate. Today science can slow it in animals. Rapamycin extended the lifespan of mice (<a href="https://doi.org/10.1038/nature08221" target="_blank" rel="noopener">Harrison et al., Nature, 2009</a>). Clearing “senescent” cells improved physical function in old mice and extended their lives (<a href="https://doi.org/10.1038/s41591-018-0092-9" target="_blank" rel="noopener">Xu et al., Nature Medicine, 2018</a>). Partial cell reprogramming restored vision in mice with glaucoma and in old mice (<a href="https://doi.org/10.1038/s41586-020-2975-4" target="_blank" rel="noopener">Lu et al., Nature, 2020</a>).',
+c2:'It is not a guarantee, but for the first time in history there is a real chance to deal with aging. How many people live to see that day depends on us: on attention, funding and the people who know about it. The faster the work moves, the more people will make it.',
+tr:'In humans this is only starting to be tested. The first such trial is ER-100 from Life Biosciences, based on the same reprogramming: the first participant was dosed in June 2026 (<a href="https://www.lifebiosciences.com/life-biosciences-announces-first-patient-dosed-in-phase-1-trial-of-er-100-for-optic-neuropathies/" target="_blank" rel="noopener">company announcement</a>, <a href="https://clinicaltrials.gov/study/NCT07290244" target="_blank" rel="noopener">registry NCT07290244</a>). So far it is a safety study for optic nerve diseases such as glaucoma, not a cure for aging. There are no results yet, and it is unknown whether humans will respond as mice did.',
+fh:'Aging is officially not a disease',
+f1:'Aging is officially not classed as a disease: the WHO’s ICD-11 <a href="https://www.who.int/standards/classifications/frequently-asked-questions/old-age" target="_blank" rel="noopener">does not call old age a disease</a>, and the FDA does not accept aging as an indication for a drug. So a drug that slows aging itself cannot yet be approved as such. It has to be tested separately on each disease, which costs years and enormous sums.',
+f2:'Supporters of change are not asking to declare aging a disease. They ask the WHO, the FDA and other regulators to adopt new wording: aging is not a disease, but it is one of the main risk factors for most diseases and, in the end, death, so acting on it is a legitimate goal of medicine. That would give researchers a clear path to test and approve such drugs.',
+f3:'The idea has critics too: some scientists argue that a normal process should not be called a disease, and fear more age discrimination (<a href="https://www.technologyreview.com/2022/10/19/1061070/is-old-age-a-disease/" target="_blank" rel="noopener">overview of the debate</a>). This is worth discussing openly.',
+dh:'What you can do today',
+d1:'Send this page to one person and tell them why it matters to you.',
+d2:'Read one article about “biology of aging” or “geroscience.”',
+d3:'Talk about it calmly and without big promises: honesty persuades better.',
+note:'How it is calculated: about 150,000 deaths a day, roughly two thirds linked to age, so ≈ 100,000 a day, or 1.16 per second. Planes: 100,000 ÷ 180 passengers (a full Boeing 737) ≈ 555 a day. These are rough estimates, not official statistics: there is no sharp line between “death from aging” and other causes. For exact data, see WHO, the UN and the Global Burden of Disease project. The counter runs in your browser and sends nothing anywhere.'}
+};
+const LOC={ru:'ru-RU',uk:'uk-UA',en:'en-US'};
+const R=100000/86400,P=180,t0=Date.now(),last={};
+const $=id=>document.getElementById(id);
+let nf;
+$('dots').innerHTML='<i></i>'.repeat(100);
+const dots=document.querySelectorAll('#dots i');
+function put(id,n){
+  if(last[id]===n)return;last[id]=n;
+  $(id).innerHTML=[...nf.format(n)].map(c=>/\d/.test(c)?'<span class="d">'+c+'</span>':'<span class="g">'+(/\s/.test(c)?'':c)+'</span>').join('');
+}
+function tick(){
+  const t=new Date(),y=new Date(t.getFullYear(),0,1),d=new Date(t.getFullYear(),t.getMonth(),t.getDate());
+  const yr=R*(t-y)/1000,o=Math.floor(R*(t-t0)/1000),k=o%100;
+  put('year',Math.floor(yr));put('day',Math.floor(R*(t-d)/1000));put('open',o);put('pl',Math.floor(yr/P));
+  if(last.k!==k){last.k=k;dots.forEach((e,i)=>e.classList.toggle('off',i<k));}
+}
+function apply(l){
+  const D=T[l],Y=new Date().getFullYear();
+  nf=new Intl.NumberFormat(LOC[l]);
+  for(const k in last)delete last[k];
+  document.documentElement.lang=l;document.title=D.t;
+  document.querySelectorAll('[data-i]').forEach(e=>e.innerHTML=D[e.dataset.i].replace('{y}',Y));
+  $('year').setAttribute('aria-label',D.al);
+  $('sw').textContent='🌐 '+l.toUpperCase();
+  tick();
+}
+function panel(show){$('pick').hidden=!show;$('main').inert=show;}
+document.querySelectorAll('[data-l]').forEach(b=>b.onclick=()=>{
+  try{localStorage.setItem('lang',b.dataset.l);}catch(e){}
+  apply(b.dataset.l);panel(false);window.scrollTo(0,0);
+});
+$('sw').onclick=()=>panel(true);
+let s;try{s=localStorage.getItem('lang');}catch(e){}
+const g=(navigator.language||'en').slice(0,2),guess=T[g]?g:'en';
+if(T[s]){apply(s);panel(false);}
+else{apply(guess);panel(true);document.querySelector('[data-l="'+guess+'"]').focus();}
+setInterval(tick,250);
+
+(function(){
+const box=$('skull');
+if(!window.THREE){box.hidden=true;return;}
+try{
+const W=THREE,sc=new W.Scene(),cam=new W.PerspectiveCamera(30,1,.1,20);
+cam.position.set(0,.02,5.2);
+const rd=new W.WebGLRenderer({alpha:true,antialias:true});
+rd.setPixelRatio(Math.min(window.devicePixelRatio||1,2));
+rd.outputEncoding=W.sRGBEncoding;
+rd.domElement.style.cssText='width:100%;height:100%;display:block';
+box.appendChild(rd.domElement);
+
+const skull=new W.Group();sc.add(skull);
+const bone=new W.MeshStandardMaterial({color:0xe5dfc5,roughness:.9,flatShading:true});
+const lightBone=new W.MeshStandardMaterial({color:0xf0ead2,roughness:.9,flatShading:true});
+const shadow=new W.MeshStandardMaterial({color:0x333b38,roughness:1,side:W.DoubleSide});
+const tooth=new W.MeshStandardMaterial({color:0xf4eedc,roughness:.8,flatShading:true});
+
+function oval(x,y,z,sx,sy,sz,mat=bone,seg=12){
+ const m=new W.Mesh(new W.SphereGeometry(1,seg,8),mat);
+ m.position.set(x,y,z);m.scale.set(sx,sy,sz);skull.add(m);return m;
+}
+function bar(x,y,z,sx,sy,sz,rz=0,mat=bone){
+ const m=oval(x,y,z,sx,sy,sz,mat,10);m.rotation.z=rz;return m;
+}
+// Cranium and facial skeleton.
+oval(0,.42,-.02,.78,.98,.67,lightBone,14);
+oval(0,-.35,.25,.57,.58,.48,bone,12);
+// Cheekbones and brow ridges.
+bar(-.57,-.34,.48,.28,.13,.22,-.28,lightBone);
+bar(.57,-.34,.48,.28,.13,.22,.28,lightBone);
+bar(-.34,.28,.57,.38,.13,.17,-.12,lightBone);
+bar(.34,.28,.57,.38,.13,.17,.12,lightBone);
+oval(0,.22,.55,.16,.12,.16,bone,9);
+
+// Eye sockets and raised orbital rims.
+oval(-.34,-.02,.625,.285,.34,.075,shadow,12);
+oval(.34,-.02,.625,.285,.34,.075,shadow,12);
+function rim(x,y,z,rx,ry){
+ const r=new W.Mesh(new W.TorusGeometry(1,.12,5,12),lightBone);
+ r.position.set(x,y,z);r.scale.set(rx,ry,1);skull.add(r);
+}
+rim(-.34,-.02,.68,.28,.34);rim(.34,-.02,.68,.28,.34);
+
+// Nasal aperture.
+const noseShape=new W.Shape();
+noseShape.moveTo(0,.13);noseShape.lineTo(-.16,-.17);noseShape.lineTo(-.105,-.27);
+noseShape.lineTo(.105,-.27);noseShape.lineTo(.16,-.17);noseShape.closePath();
+const nose=new W.Mesh(new W.ShapeGeometry(noseShape),shadow);
+nose.position.set(0,-.22,.77);skull.add(nose);
+bar(-.19,-.43,.67,.18,.10,.12,-.35,lightBone);
+bar(.19,-.43,.67,.18,.10,.12,.35,lightBone);
+
+// Upper jaw, mandible and chin.
+oval(0,-.58,.48,.43,.23,.30,lightBone,11);
+bar(-.43,-.69,.40,.13,.38,.18,-.16,bone);
+bar(.43,-.69,.40,.13,.38,.18,.16,bone);
+oval(0,-.91,.48,.43,.19,.25,bone,11);
+oval(0,-1.02,.49,.29,.12,.19,lightBone,10);
+
+// Individual teeth.
+for(let i=0;i<8;i++){
+ const x=(i-3.5)*.095;
+ const upper=new W.Mesh(new W.BoxGeometry(.075,.13,.12),tooth);
+ upper.position.set(x,-.66,.735);upper.rotation.z=(i-3.5)*-.025;skull.add(upper);
+ const lower=new W.Mesh(new W.BoxGeometry(.075,.12,.115),tooth);
+ lower.position.set(x,-.83,.735);lower.rotation.z=(i-3.5)*.025;skull.add(lower);
+}
+oval(-.72,-.12,-.04,.12,.23,.18,bone,9);
+oval(.72,-.12,-.04,.12,.23,.18,bone,9);
+
+const dl=new W.DirectionalLight(0xffffff,1.05);dl.position.set(2,3,4);
+sc.add(dl,new W.HemisphereLight(0xffffff,0x596354,1.05));
+const reduce=matchMedia('(prefers-reduced-motion:reduce)').matches,ts=performance.now();
+let drag=0,down=false,lx=0;
+const size=()=>{const w=box.clientWidth||120;rd.setSize(w,w,false);cam.aspect=1;cam.updateProjectionMatrix();};
+const frame=now=>{
+ skull.rotation.set(.04,(reduce?.28:Math.sin((now-ts)/2200)*.12+.28)+drag,0);
+ rd.render(sc,cam);
+ if(!reduce)requestAnimationFrame(frame);
+};
+box.addEventListener('pointerdown',e=>{down=true;lx=e.clientX;box.setPointerCapture(e.pointerId);});
+box.addEventListener('pointermove',e=>{if(!down)return;drag+=(e.clientX-lx)*.012;lx=e.clientX;if(reduce)frame(performance.now());});
+['pointerup','pointercancel','lostpointercapture'].forEach(v=>box.addEventListener(v,()=>{down=false;}));
+window.addEventListener('resize',()=>{size();if(reduce)frame(performance.now());});
+size();requestAnimationFrame(frame);
+}catch(e){box.hidden=true;console.error('Skull rendering failed:',e);}
+})();
+</script>
+</body>
+</html>
